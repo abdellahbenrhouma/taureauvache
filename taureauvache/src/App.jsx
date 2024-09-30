@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
-const socket = io('https://taureauvache.onrender.com/'); // Connect to the backend
+const socket = io('http://localhost:3000'); // Connect to the backend
 
 export default function Component() {
   const [secretNumber, setSecretNumber] = useState('');
