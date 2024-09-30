@@ -19,8 +19,7 @@ app.use(cookieParser());
 app.use(cors({
   origin: "https://taureauvache-client.vercel.app/",
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  methods: ['GET', 'POST'],
 }));
 
 let waitingPlayer = null; // Store the waiting player
