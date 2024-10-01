@@ -3,13 +3,14 @@ import path from 'path';
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import http from 'http';
+import { instrument } from "@socket.io/admin-ui";
 import { Server } from 'socket.io';
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://taureauvache.vercel.app",
+    origin: ["https://taureauvache.vercel.app", "https://admin.socket.io"],
     credentials: true
   }
 });
@@ -79,6 +80,10 @@ io.on('connection', (socket) => {
       console.log('Player disconnected:', socket.id);
     });
   });
+});
+
+instrument(io, {
+  auth: false  // Disable authentication for easy access
 });
 
 // Start the server
