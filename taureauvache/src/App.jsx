@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import Chat from './Chat'; // Import Chat component
 
 const socket = io('https://taureauvache.onrender.com/'); // Connect to the backend
 
@@ -10,14 +11,14 @@ export default function Component() {
   const [gameWon, setGameWon] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [waitingForOpponent, setWaitingForOpponent] = useState(false);
-  const [opponentSecretNumber, setOpponentSecretNumber] = useState(''); // Store opponent's secret number
+  const [opponentSecretNumber, setOpponentSecretNumber] = useState('');
   const [opponentGuess, setOpponentGuess] = useState(null);
-  const [isMyTurn, setIsMyTurn] = useState(false); // Track if it's this player's turn
+  const [isMyTurn, setIsMyTurn] = useState(false);
 
   useEffect(() => {
     socket.on('startGame', ({ opponent, opponentSecret }) => {
       setWaitingForOpponent(false);
-      setOpponentSecretNumber(opponentSecret); // Store opponent's secret number
+      setOpponentSecretNumber(opponentSecret);
       setGameStarted(true);
       console.log('Game started against opponent:', opponent);
     });
@@ -28,12 +29,12 @@ export default function Component() {
     });
 
     socket.on('opponentGuess', (guess) => {
-      setOpponentGuess(guess); // Handle opponent's guess
+      setOpponentGuess(guess);
       console.log('Opponent guessed:', guess);
     });
 
     socket.on('yourTurn', (turnStatus) => {
-      setIsMyTurn(turnStatus); // Update turn status
+      setIsMyTurn(turnStatus);
     });
 
     return () => {
@@ -52,15 +53,13 @@ export default function Component() {
     if (
       secretNumber.length !== 4 ||
       !/^\d+$/.test(secretNumber) ||
-      secretNumber[0] === '0' ||  // Check that it doesn't start with 0
-      !hasUniqueDigits(secretNumber)  // Check for unique digits
+      secretNumber[0] === '0' ||
+      !hasUniqueDigits(secretNumber)
     ) {
-      alert(
-        "Please enter a valid 4-digit number that doesn't start with 0 and has no repeated digits."
-      );
+      alert("Please enter a valid 4-digit number that doesn't start with 0 and has no repeated digits.");
       return;
     }
-    socket.emit('playRound', secretNumber); // Send player's secret number to server
+    socket.emit('playRound', secretNumber);
     setGameStarted(true);
   }
 
@@ -68,23 +67,19 @@ export default function Component() {
     if (
       currentGuess.length !== 4 ||
       !/^\d+$/.test(currentGuess) ||
-      currentGuess[0] === '0' ||  // Check that guess doesn't start with 0
-      !hasUniqueDigits(currentGuess)  // Check for unique digits in guess
+      currentGuess[0] === '0' ||
+      !hasUniqueDigits(currentGuess)
     ) {
-      alert(
-        "Please enter a 4-digit number that doesn't start with 0 and has no repeated digits."
-      );
+      alert("Please enter a 4-digit number that doesn't start with 0 and has no repeated digits.");
       return;
     }
 
-    socket.emit('guess', currentGuess); // Send the guess to the opponent
+    socket.emit('guess', currentGuess);
 
     const bulls = opponentSecretNumber
       .split('')
       .filter((digit, index) => digit === currentGuess[index]).length;
-    const cows =
-      opponentSecretNumber.split('').filter((digit) => currentGuess.includes(digit))
-        .length - bulls;
+    const cows = opponentSecretNumber.split('').filter((digit) => currentGuess.includes(digit)).length - bulls;
 
     const newGuess = { number: currentGuess, bulls, cows };
     setGuesses([newGuess, ...guesses]);
@@ -107,6 +102,7 @@ export default function Component() {
 
   return (
     <div className="container">
+      <Chat socket={socket} /> {/* Include Chat component */}
       <div className="card">
         <div className="card-header">
           <h1>Taureau Vache</h1>
@@ -129,9 +125,7 @@ export default function Component() {
           ) : (
             <>
               {waitingForOpponent ? (
-                <p className="waiting-message">
-                  Waiting for an opponent to join...
-                </p>
+                <p className="waiting-message">Waiting for an opponent to join...</p>
               ) : (
                 <>
                   <p className="description">
@@ -146,13 +140,9 @@ export default function Component() {
                       placeholder="Enter 4-digit number"
                       maxLength={4}
                       className="input"
-                      disabled={!isMyTurn || gameWon} // Disable input if it's not player's turn or if the game is won
+                      disabled={!isMyTurn || gameWon}
                     />
-                    <button 
-                      onClick={handleGuess} 
-                      disabled={!isMyTurn || gameWon} 
-                      className="guess-button"
-                    >
+                    <button onClick={handleGuess} disabled={!isMyTurn || gameWon} className="guess-button">
                       Guess
                     </button>
                   </div>
@@ -160,15 +150,11 @@ export default function Component() {
                     <p className="waiting-turn-message">Waiting for your opponent's turn...</p>
                   )}
                   <div className="new-game">
-                    <button onClick={resetGame} className="reset-button">
-                      New Game
-                    </button>
+                    <button onClick={resetGame} className="reset-button">New Game</button>
                   </div>
                   <div className="guess-list">
                     {gameWon && (
-                      <p className="game-won-message">
-                        Congratulations! You've won!
-                      </p>
+                      <p className="game-won-message">Congratulations! You've won!</p>
                     )}
                     {guesses.map((guess, index) => (
                       <div key={index} className="guess-item">

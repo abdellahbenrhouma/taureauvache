@@ -72,13 +72,18 @@ io.on('connection', (socket) => {
       waitingPlayer.secretNumber = secretNumber;
       socket.emit('waiting', 'Waiting for an opponent...');
     }
+  });
 
-    socket.on('disconnect', () => {
-      if (waitingPlayer === socket) {
-        waitingPlayer = null; // Reset waiting player on disconnect
-      }
-      console.log('Player disconnected:', socket.id);
-    });
+  // Handle chat messages
+  socket.on('chatMessage', (message) => {
+    io.emit('chatMessage', `${socket.id}: ${message}`); // Broadcast the message to all players
+  });
+
+  socket.on('disconnect', () => {
+    if (waitingPlayer === socket) {
+      waitingPlayer = null; // Reset waiting player on disconnect
+    }
+    console.log('Player disconnected:', socket.id);
   });
 });
 
