@@ -127,9 +127,7 @@
   color: #2563eb;
 }
 
-
 /* chat styles */
-
 .chat-box {
   position: fixed;
   top: 10px;
@@ -162,4 +160,57 @@
   color: white;
   border: none;
   cursor: pointer;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .container {
+    margin-top: 20px;
+    padding: 10px;
+  }
+
+  .card {
+    max-width: 100%; /* Make card take full width on small screens */
+    border-radius: 8px;
+  }
+
+  .card-header h1 {
+    font-size: 1.5rem; /* Adjust font size for smaller screens */
+  }
+
+  .card-body {
+    padding: 16px; /* Reduce padding for smaller screens */
+  }
+
+  .input-container {
+    flex-direction: column; /* Stack input and button vertically on small screens */
+    gap: 10px;
+  }
+
+  .input {
+    margin-right: 0; /* Remove margin on small screens */
+  }
+
+  .guess-list {
+    max-height: 200px; /* Reduce guess list height for smaller screens */
+  }
+
+  .chat-box {
+    width: 100%;
+    height: 300px; /* Adjust chat box size for smaller screens */
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px;
+  }
+
+  .messages {
+    margin-bottom: 8px;
+  }
+
+  .chat-send-button {
+    padding: 8px;
+    font-size: 14px;
+  }
 }
